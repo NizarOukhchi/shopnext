@@ -1,6 +1,6 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { checkAccess } from "./lib/auth";
+import { checkAccess, checkAuth } from "./lib/auth";
 import { paginationOptsValidator } from "convex/server";
 
 export const getPaginatedProducts = query({
@@ -9,6 +9,9 @@ export const getPaginatedProducts = query({
     listId: v.id("lists"),
   },
   handler: async (ctx, { listId, paginationOpts }) => {
+    const identity = await checkAuth(ctx);
+    await checkAccess(ctx, listId, identity.subject, "read");
+
     return await ctx.db
       .query("products")
       .withIndex("by_list", (q) => q.eq("listId", listId))
@@ -27,8 +30,7 @@ export const create = mutation({
     url: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     await checkAccess(ctx, args.listId, identity.subject, "write");
     return await ctx.db.insert("products", args);
@@ -41,8 +43,7 @@ export const scrapeAndCreate = mutation({
     url: v.string(),
   },
   handler: async (ctx, { listId, url }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     await checkAccess(ctx, listId, identity.subject, "write");
 
@@ -59,8 +60,7 @@ export const deleteProduct = mutation({
     productId: v.id("products"),
   },
   handler: async (ctx, { productId }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     const product = await ctx.db.get(productId);
     if (!product) throw new Error("Product not found");
@@ -84,16 +84,16 @@ export const transferProduct = mutation({
     ]);
 
     if (!product) {
-      throw new Error("Product not found");
+      throw new ConvexError("Product not found");
     }
 
     if (!targetList) {
-      throw new Error("Target list not found");
+      throw new ConvexError("Target list not found");
     }
 
     // Don't transfer if product is already in the target list
     if (product.listId === newListId) {
-      throw new Error("Product is already in this list");
+      throw new ConvexError("Product is already in this list");
     }
 
     // Update the product's listId
@@ -110,8 +110,7 @@ export const searchProducts = query({
     searchQuery: v.string(),
   },
   handler: async (ctx, { searchQuery }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     // Get all lists the user has access to
     const accessibleLists = await ctx.db

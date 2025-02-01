@@ -1,11 +1,11 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { checkAuth } from "./lib/auth";
 
 export const getLists = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     // Fetch created lists
     const createdLists = await ctx.db
@@ -33,8 +33,7 @@ export const getLists = query({
 export const getListById = query({
   args: { id: v.id("lists") },
   handler: async (ctx, { id }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(id);
     if (!list) throw new Error("List not found");
@@ -52,8 +51,7 @@ export const create = mutation({
     name: v.string(),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     return await ctx.db.insert("lists", {
       name: args.name,
@@ -67,8 +65,7 @@ export const deleteList = mutation({
     listId: v.id("lists"),
   },
   handler: async (ctx, { listId }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(listId);
     if (!list) throw new Error("List not found");
@@ -109,8 +106,7 @@ export const shareList = mutation({
     access: v.union(v.literal("read"), v.literal("write")),
   },
   handler: async (ctx, { listId, userId, access }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(listId);
     if (!list) throw new Error("List not found");
@@ -142,8 +138,7 @@ export const removeShare = mutation({
     userId: v.string(),
   },
   handler: async (ctx, { listId, userId }) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(listId);
     if (!list) throw new Error("List not found");
@@ -169,8 +164,7 @@ export const removeShare = mutation({
 export const getSharedLists = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     const sharedEntries = await ctx.db
       .query("shares")
@@ -188,8 +182,7 @@ export const getSharedLists = query({
 export const getOwnedLists = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new Error("Unauthenticated");
+    const identity = await checkAuth(ctx);
 
     return await ctx.db
       .query("lists")
