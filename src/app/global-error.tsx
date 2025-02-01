@@ -9,10 +9,14 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  if (error instanceof ConvexError && error.name === "Unauthenticated") {
+  const errorMessage =
+    error instanceof ConvexError
+      ? (error.data as { message: string }).message
+      : "Unexpected error occurred";
+  console.log(errorMessage);
+  if (errorMessage === "Unauthenticated") {
     return <div>Unauthenticated</div>;
   }
-  console.log(error);
   return (
     // global-error must include html and body tags
     <html>
