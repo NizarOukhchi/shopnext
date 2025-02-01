@@ -1,3 +1,5 @@
+import { ConvexError } from "convex/values";
+
 export default function GlobalError({
   error,
   reset,
@@ -5,6 +7,9 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  if (error instanceof ConvexError && error.name === "Unauthenticated") {
+    return <div>Unauthenticated</div>;
+  }
   return (
     // global-error must include html and body tags
     <html>
