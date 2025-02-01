@@ -1,0 +1,8 @@
+{
+  "search": {
+    "fullTextSearch": true
+  },
+  "auth": {
+    "provider": "clerk"
+  }
+}

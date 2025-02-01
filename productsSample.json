@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Sac à dos Christopher MM",
+    "imageUrl": "https://fr.louisvuitton.com/images/is/image/lv/1/PP_VP_L/louis-vuitton-sac-a-dos-christopher-mm--M12662_PM1_Worn%20view.png?wid=1440&hei=1440",
+    "price": "$4,100.00"
+  },
+  {
+    "title": "Jordan Monogram Backpack",
+    "imageUrl": "https://i8.amplience.net/i/jpl/jd_721580_a?qlt=92&w=950&h=1212&v=1&fmt=auto",
+    "price": "$99.99"
+  },
+  {
+    "title": "Chaussure Samba OG",
+    "imageUrl": "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/3bbecbdf584e40398446a8bf0117cf62_9366/Chaussure_Samba_OG_Blanc_B75806_01_00_standard.jpg",
+    "price": "$120.00"
+  },
+  {
+    "title": "The Witcher 3: Wild Hunt",
+    "imageUrl": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/292030/header.jpg?t=1736424367",
+    "price": "$29.99"
+  },
+  {
+    "title": "Apple iPhone 16 Pro Max Titane Sable 256Go",
+    "imageUrl": "https://boulanger.scene7.com/is/image/Boulanger/0195949806193_h_f_l_0?wid=1016&hei=1016&resMode=sharp2&op_usm=1.75,0.3,2,0",
+    "price": "$1431.99"
+  },
+  {
+    "title": "Apple MacBook Pro 16' M4 Max 48Go CPU16 GPU40 1To",
+    "imageUrl": "https://boulanger.scene7.com/is/image/Boulanger/0195949869068_h_f_l_0?wid=1016&hei=1016&resMode=sharp2&op_usm=1.75,0.3,2,0",
+    "price": "$4549.00"
+  }
+]

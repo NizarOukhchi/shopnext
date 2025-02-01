@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ShopNext
 
-## Getting Started
+A collaborative wishlist application allows users to save products while browsing and organize them into shareable lists.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### List Management
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Create, edit and delete lists
+- Infinite scroll pagination for products within lists
+- Search and filter products within lists
+- Share lists with configurable access levels:
+  - Read-only access
+  - Full access (add/remove products)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Product Management
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Add products from any website URL
+- Product details stored:
+  - Title
+  - Image
+  - Price
+  - Description
+  - URL
+- Move products between lists
+- Remove products from lists
 
-## Learn More
+### Collaboration
 
-To learn more about Next.js, take a look at the following resources:
+- Share lists via unique links
+- Configure access permissions per user
+- Real-time updates across all collaborators
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Frontend
 
-## Deploy on Vercel
+- **Next.js 15** - React framework with App Router
+- **TailwindCSS** - Utility-first CSS framework
+- **shadcn/ui** - Reusable component system
+- **Lucide Icons** - Icon library
+- **Clerk** - Authentication and user management
+- **TypeScript** - Type safety
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Backend
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Convex** - Backend platform with:
+  - Real-time database
+  - Serverless functions
+  - Full-text search
+  - Authentication integration
+  - TypeScript support
+
+### Key Directories and Files
+
+#### Frontend (`src/`)
+
+- `app/`: Next.js 15 app directory with route groups
+  - `(marketing)/`: Public pages like landing page
+  - `lists/`: Protected routes for authenticated users
+- `components/`: Reusable React components
+  - `ui/`: Base UI components from shadcn/ui
+  - Custom components for specific features
+- `middleware.ts`: Clerk authentication middleware
+
+#### Backend (`convex/`)
+
+- `lib/`: Shared utilities and helpers
+  - `auth.ts`: Access control and permissions
+- `lists.ts`: List CRUD operations and sharing
+- `products.ts`: Product management
+- `schema.ts`: Database schema and indexes
+- `_generated/`: Auto-generated TypeScript types
+
+### File Organization Principles
+
+1. **Route Groups**: Marketing pages are separated from authenticated routes
+2. **Component Hierarchy**: UI components separated from feature components
+3. **Backend Modules**: Organized by domain (lists, products)
+4. **Shared Logic**: Common utilities in `lib` directory
+5. **Type Safety**: Generated types in `_generated` directory
+
+### Key Files
+
+- `convex/schema.ts`: Database schema definition
+- `convex/lib/auth.ts`: Access control logic
+- `src/app/layout.tsx`: Root layout with providers
+- `src/middleware.ts`: Authentication middleware
+- `convex.json`: Convex configuration
+
+This structure follows Next.js and Convex best practices while maintaining clear separation of concerns and modularity.
