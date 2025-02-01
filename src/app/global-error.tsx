@@ -12,6 +12,7 @@ export default function GlobalError({
   if (error instanceof ConvexError && error.name === "Unauthenticated") {
     return <div>Unauthenticated</div>;
   }
+  console.log(error);
   return (
     // global-error must include html and body tags
     <html>
