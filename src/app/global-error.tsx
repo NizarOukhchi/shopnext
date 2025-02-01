@@ -1,6 +1,7 @@
 "use client";
 
 import { ConvexError } from "convex/values";
+import { redirect } from "next/navigation";
 
 export default function GlobalError({
   error,
@@ -9,14 +10,10 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  const errorMessage =
-    error instanceof ConvexError
-      ? (error.data as { message: string }).message
-      : "Unexpected error occurred";
-  console.log(errorMessage);
-  if (errorMessage === "Unauthenticated") {
-    return <div>Unauthenticated</div>;
+  if (error instanceof ConvexError) {
+    redirect("/sign-in");
   }
+  console.log(error);
   return (
     // global-error must include html and body tags
     <html>
