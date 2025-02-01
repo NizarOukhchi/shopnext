@@ -1,3 +1,5 @@
+"use client";
+
 import { ConvexError } from "convex/values";
 
 export default function GlobalError({
