@@ -1,7 +1,9 @@
 "use client";
 
 import { ConvexError } from "convex/values";
-import { redirect } from "next/navigation";
+import posthog from "posthog-js";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function GlobalError({
   error,
@@ -10,10 +12,14 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  if (error instanceof ConvexError) {
-    redirect("/sign-in");
-  }
-  console.log(error);
+  const router = useRouter();
+  useEffect(() => {
+    posthog.capture("webapp_crash", { error: error.message });
+    if (error instanceof ConvexError) {
+      //router.push("/sign-in");
+    }
+  }, [error, router]);
+
   return (
     // global-error must include html and body tags
     <html>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ConvexClientProvider } from "@/components/ConvexProvider";
 import { SelectedListProvider } from "@/components/SelectedListContext";
+import { Providers } from "@/components/Providers";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -24,16 +25,18 @@ export default function RootLayout({
   return (
     <ConvexClientProvider>
       <html lang="en" suppressHydrationWarning>
-        <body className={`${notoSans.variable} antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <SelectedListProvider>{children}</SelectedListProvider>
-          </ThemeProvider>
-        </body>
+        <Providers>
+          <body className={`${notoSans.variable} antialiased`}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <SelectedListProvider>{children}</SelectedListProvider>
+            </ThemeProvider>
+          </body>
+        </Providers>
       </html>
     </ConvexClientProvider>
   );

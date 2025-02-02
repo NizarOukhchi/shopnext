@@ -1,7 +1,7 @@
 const authConfig = {
   providers: [
     {
-      domain: "https://exact-spider-46.clerk.accounts.dev/",
+      domain: process.env.CLERK_CONVEX_ISSUER,
       applicationID: "convex",
     },
   ],
