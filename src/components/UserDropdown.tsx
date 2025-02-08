@@ -12,13 +12,13 @@ import { getCurrentUser } from "@/app/auth";
 import { SignOutButton } from "@clerk/nextjs";
 import { LogOutIcon } from "lucide-react";
 
-export default async function UserDropdown() {
+export async function UserDropdown() {
   const user = await getCurrentUser();
   return (
     <div className="flex items-center justify-center">
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Avatar className="h-24 w-24 cursor-pointer">
+          <Avatar className="h-8 w-8 cursor-pointer">
             <AvatarImage src={user.image} />
             <AvatarFallback>{user.initials}</AvatarFallback>
           </Avatar>

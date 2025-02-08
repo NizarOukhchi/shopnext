@@ -1,14 +1,30 @@
 import type { Metadata } from "next";
-import { Noto_Sans } from "next/font/google";
+import localFont from "next/font/local";
+
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ConvexClientProvider } from "@/components/ConvexProvider";
-import { SelectedListProvider } from "@/components/SelectedListContext";
 import { Providers } from "@/components/Providers";
 
-const notoSans = Noto_Sans({
-  subsets: ["latin"],
-  variable: "--font-notoSans",
+const wotfard = localFont({
+  src: [
+    {
+      path: "./fonts/wotfard-regular.woff2",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./fonts/wotfard-medium.woff2",
+      weight: "500",
+      style: "normal",
+    },
+    {
+      path: "./fonts/wotfard-semibold.woff2",
+      weight: "600",
+      style: "normal",
+    },
+  ],
+  variable: "--font-wotfard",
 });
 
 export const metadata: Metadata = {
@@ -26,14 +42,14 @@ export default function RootLayout({
     <ConvexClientProvider>
       <html lang="en" suppressHydrationWarning>
         <Providers>
-          <body className={`${notoSans.variable} antialiased`}>
+          <body className={`${wotfard.className} antialiased`}>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
               enableSystem
               disableTransitionOnChange
             >
-              <SelectedListProvider>{children}</SelectedListProvider>
+              {children}
             </ThemeProvider>
           </body>
         </Providers>

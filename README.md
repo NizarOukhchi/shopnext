@@ -31,6 +31,12 @@ A collaborative wishlist application allows users to save products while browsin
 - Configure access permissions per user
 - Real-time updates across all collaborators
 
+### Market Research
+
+- public lists that any one can update
+- event (anniversary, christmas) based lists with date
+- comments and vote on products
+
 ## Tech Stack
 
 ### Frontend

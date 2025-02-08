@@ -19,7 +19,7 @@ const initialState = {
   listId: undefined,
 };
 
-export default function CreateListPopover() {
+export function CreateListPopover() {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(createList, initialState);
   const uniqueId = useId();
@@ -72,7 +72,7 @@ export default function CreateListPopover() {
         <motion.button
           key="button"
           layoutId={`popover-${uniqueId}`}
-          className="relative inline-flex text-foreground px-3 py-2 rounded-md text-md font-semibold"
+          className="relative inline-flex text-foreground px-3 py-2 rounded-md text-md font-medium"
           style={{
             borderRadius: 8,
           }}

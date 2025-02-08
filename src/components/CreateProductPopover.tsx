@@ -1,15 +1,15 @@
 "use client";
 import useClickOutside from "@/hooks/useClickOutside";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowLeftIcon, ShoppingCartIcon } from "lucide-react";
+import { ArrowLeftIcon, PlusCircleIcon } from "lucide-react";
 import { useRef, useState, useEffect, useId, useActionState } from "react";
-import { Button } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { Magnetic } from "./ui/magnetic";
 import { TextShimmer } from "./ui/text-shimmer";
 import { useParams } from "next/navigation";
 import { Id } from "../../convex/_generated/dataModel";
 import { createProduct } from "@/app/lists/[_id]/actions";
-
+import { cn } from "@/lib/utils";
 const TRANSITION = {
   type: "spring",
   bounce: 0.05,
@@ -78,10 +78,7 @@ export function CreateProductPopover() {
           ref={buttonRef}
           key="button"
           layoutId={`popover-${uniqueId}`}
-          className="relative inline-flex bg-primary text-white px-3 py-2 rounded-md text-md font-semibold"
-          style={{
-            borderRadius: 8,
-          }}
+          className={cn(buttonVariants({ variant: "default" }))}
           onClick={openMenu}
         >
           <Magnetic
@@ -94,7 +91,7 @@ export function CreateProductPopover() {
               className="flex items-center"
               layoutId={`popover-label-${uniqueId}`}
             >
-              <ShoppingCartIcon size={20} />
+              <PlusCircleIcon size={20} />
             </motion.span>
           </Magnetic>
         </motion.button>

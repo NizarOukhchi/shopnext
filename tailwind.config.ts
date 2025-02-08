@@ -61,7 +61,8 @@ export default {
         "1": "rgba(2, 8, 20, 0.1) 0px 2px 4px, rgba(2, 8, 20, 0.08) 0px 1px 2px",
       },
       fontFamily: {
-        notoSans: ["var(--font-notoSans)"],
+        wotfard: ["var(--font-wotfard)"],
+        cartograph: ["var(--font-cartograph)"],
       },
     },
   },

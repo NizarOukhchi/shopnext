@@ -11,7 +11,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   return (
-    <div className="group flex flex-col bg-card rounded-xl border overflow-hidden">
+    <div className="group flex flex-col bg-card rounded-xl shadow-1 overflow-hidden">
       <div className="relative aspect-[6/7] w-full overflow-hidden">
         <Image
           src={product.imageUrl ?? ""}

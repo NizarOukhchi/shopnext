@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  font-family: var(--font-satoshi);
+  font-family: var(--font-wotfard);
 }
 
 @layer base {
