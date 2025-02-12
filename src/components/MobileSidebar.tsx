@@ -3,7 +3,7 @@
 import { Bell, Search, Menu, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Logo } from "./ui/logo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { ModeToggle } from "./ModeToggle";
@@ -11,13 +11,20 @@ import { UsersLists } from "./UsersLists";
 import { Preloaded } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { CreateListPopover } from "./CreateListPopover";
+import { usePathname } from "next/navigation";
 
 interface MobileSidebarProps {
   preloadedLists: Preloaded<typeof api.lists.getLists>;
 }
 
 export function MobileSidebar({ preloadedLists }: MobileSidebarProps) {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   return (
     <>
       <Button
