@@ -1,13 +1,12 @@
 "use client";
 import useClickOutside from "@/hooks/useClickOutside";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowLeftIcon, PlusCircleIcon } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 import { useRef, useState, useEffect, useId, useActionState } from "react";
 import { Button } from "./ui/button";
-import { createList } from "@/app/lists/actions";
+import { deleteList } from "@/app/lists/[_id]/actions";
 import { TextShimmer } from "./ui/text-shimmer";
 import { useRouter } from "next/navigation";
-
 const TRANSITION = {
   type: "spring",
   bounce: 0.05,
@@ -16,18 +15,20 @@ const TRANSITION = {
 
 const initialState = {
   message: "",
-  listId: undefined,
+  nextList: undefined,
 };
 
-export function CreateListPopover() {
+type DeleteListPopoverProps = {
+  listId: string;
+};
+
+export function DeleteListPopover({ listId }: DeleteListPopoverProps) {
   const router = useRouter();
-  const [state, formAction, pending] = useActionState(createList, initialState);
+  const [state, formAction, pending] = useActionState(deleteList, initialState);
   const uniqueId = useId();
   const formContainerRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState(false);
-  const [text, setText] = useState<null | string>(null);
   const wasPending = useRef(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const openMenu = () => {
     setIsOpen(true);
@@ -35,7 +36,6 @@ export function CreateListPopover() {
 
   const closeMenu = () => {
     setIsOpen(false);
-    setText(null);
   };
 
   useClickOutside(formContainerRef as React.RefObject<HTMLElement>, () => {
@@ -58,13 +58,16 @@ export function CreateListPopover() {
 
   useEffect(() => {
     if (wasPending.current && !pending) {
-      // Mutation has completed
       closeMenu();
-
-      router.push(`/lists/${state.listId}`);
+      console.log("state.nextList", state);
+      if (state.nextList) {
+        router.push(`/lists/${state.nextList._id}`);
+      } else {
+        router.push("/lists");
+      }
     }
     wasPending.current = pending;
-  }, [pending, router, state.listId]);
+  }, [pending, router, state, state.nextList]);
 
   return (
     <MotionConfig transition={TRANSITION}>
@@ -72,19 +75,10 @@ export function CreateListPopover() {
         <motion.button
           key="button"
           layoutId={`popover-${uniqueId}`}
-          className="relative inline-flex text-foreground px-3 py-2 rounded-md text-md font-medium"
-          style={{
-            borderRadius: 8,
-          }}
+          className="relative inline-flex text-foreground px-3 py-2 text-sm font-medium"
           onClick={openMenu}
         >
-          <motion.span
-            className="flex gap-2 items-center"
-            layoutId={`popover-label-${uniqueId}`}
-          >
-            <PlusCircleIcon size={20} />
-            Create a new list
-          </motion.span>
+          Move to trash
         </motion.button>
 
         <AnimatePresence>
@@ -92,7 +86,7 @@ export function CreateListPopover() {
             <motion.div
               ref={formContainerRef}
               layoutId={`popover-${uniqueId}`}
-              className="absolute h-[120px] w-[250px] overflow-hidden bg-white outline-none shadow-1"
+              className="absolute w-[250px] overflow-hidden bg-white outline-none shadow-1"
               style={{
                 borderRadius: 8,
               }}
@@ -102,26 +96,16 @@ export function CreateListPopover() {
                 className="flex h-full flex-col"
                 action={formAction}
               >
-                <motion.span
-                  layoutId={`popover-label-${uniqueId}`}
-                  onClick={() => inputRef.current?.focus()}
-                  aria-hidden="true"
-                  style={{
-                    opacity: text ? 0 : 1,
-                  }}
-                  className="absolute left-4 top-[18px] select-none text-base text-zinc-500 dark:text-zinc-400 cursor-text"
-                >
-                  Create a new list
-                </motion.span>
+                <div className="flex justify-between px-4 py-3">
+                  Are you sure you want to delete this list, you will loose all
+                  the products in it?
+                </div>
                 <input
-                  ref={inputRef}
-                  name="name"
                   type="text"
-                  autoComplete="off"
-                  className="h-full w-full rounded-md bg-transparent px-4 py-3 text-base outline-none"
-                  autoFocus
-                  required
-                  onChange={(e) => setText(e.target.value)}
+                  name="listId"
+                  className="hidden"
+                  readOnly
+                  defaultValue={listId}
                 />
                 <div key="close" className="flex justify-between px-4 py-3">
                   <button
@@ -142,10 +126,12 @@ export function CreateListPopover() {
                     aria-label="Submit note"
                     disabled={pending}
                   >
-                    {!pending && <span className="text-sm">Submit</span>}
+                    {!pending && (
+                      <span className="text-sm">Yes, I&apos;m sure</span>
+                    )}
                     {pending && (
                       <TextShimmer className="text-sm" duration={1}>
-                        Creating list...
+                        Deleting list...
                       </TextShimmer>
                     )}
                   </Button>

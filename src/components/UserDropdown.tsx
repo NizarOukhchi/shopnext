@@ -11,11 +11,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { getCurrentUser } from "@/app/auth";
 import { SignOutButton } from "@clerk/nextjs";
 import { LogOutIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export async function UserDropdown() {
+type UserDropdownProps = {
+  className?: string;
+};
+
+export async function UserDropdown({ className }: UserDropdownProps) {
   const user = await getCurrentUser();
   return (
-    <div className="flex items-center justify-center">
+    <div className={cn("flex items-center justify-center", className)}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="h-8 w-8 cursor-pointer">

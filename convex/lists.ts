@@ -1,4 +1,4 @@
-import { v } from "convex/values";
+import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { checkAuth } from "./lib/auth";
 
@@ -36,10 +36,10 @@ export const getListById = query({
     const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(id);
-    if (!list) throw new Error("List not found");
+    if (!list) throw new ConvexError("List not found");
 
     if (list.creatorId !== identity.subject) {
-      throw new Error("You are not authorized to view this list");
+      throw new ConvexError("You are not authorized to view this list");
     }
 
     return list;
@@ -56,6 +56,7 @@ export const create = mutation({
     return await ctx.db.insert("lists", {
       name: args.name,
       creatorId: identity.subject,
+      isPublic: false,
     });
   },
 });
@@ -68,11 +69,11 @@ export const deleteList = mutation({
     const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(listId);
-    if (!list) throw new Error("List not found");
+    if (!list) throw new ConvexError("List not found");
 
     // Only creator can delete the list
     if (list.creatorId !== identity.subject) {
-      throw new Error("Only the creator can delete the list");
+      throw new ConvexError("Only the creator can delete the list");
     }
 
     // Delete all shares for this list
@@ -109,11 +110,11 @@ export const shareList = mutation({
     const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(listId);
-    if (!list) throw new Error("List not found");
+    if (!list) throw new ConvexError("List not found");
 
     // Only creator can share the list
     if (list.creatorId !== identity.subject) {
-      throw new Error("Only the creator can share the list");
+      throw new ConvexError("Only the creator can share the list");
     }
 
     // Remove existing share if any
@@ -141,11 +142,11 @@ export const removeShare = mutation({
     const identity = await checkAuth(ctx);
 
     const list = await ctx.db.get(listId);
-    if (!list) throw new Error("List not found");
+    if (!list) throw new ConvexError("List not found");
 
     // Only creator can modify shares
     if (list.creatorId !== identity.subject) {
-      throw new Error("Only the creator can modify shares");
+      throw new ConvexError("Only the creator can modify shares");
     }
 
     // Delete the share
@@ -188,5 +189,50 @@ export const getOwnedLists = query({
       .query("lists")
       .filter((q) => q.eq(q.field("creatorId"), identity.subject))
       .collect();
+  },
+});
+
+export const getNextList = query({
+  args: {
+    listId: v.id("lists"),
+  },
+  handler: async (ctx, { listId }) => {
+    const identity = await checkAuth(ctx);
+
+    // Try to get first created list
+    const createdList = await ctx.db
+      .query("lists")
+      .withIndex("by_creator", (q) => q.eq("creatorId", identity.subject))
+      .order("desc")
+      .filter((q) => q.neq(q.field("_id"), listId))
+      .first();
+
+    if (createdList) return createdList;
+
+    return null;
+  },
+});
+
+export const updateList = mutation({
+  args: {
+    listId: v.id("lists"),
+    name: v.string(),
+    isPublic: v.boolean(),
+  },
+  handler: async (ctx, { listId, name, isPublic }) => {
+    const identity = await checkAuth(ctx);
+
+    const list = await ctx.db.get(listId);
+    if (!list) throw new ConvexError("List not found");
+
+    if (list.creatorId !== identity.subject) {
+      throw new ConvexError("Only the creator can update the list");
+    }
+
+    await ctx.db.patch(listId, {
+      name: name || list.name,
+      isPublic: isPublic || list.isPublic,
+    });
+    return true;
   },
 });

@@ -21,6 +21,7 @@ export function UsersLists({ preloadedLists }: UsersListsProps) {
         defaultValue={`nav-item-${selectedList?._id}`}
         className="rounded-lg bg-white shadow-1"
         childrenClassName="flex items-center gap-2"
+        titleClassName="flex items-center mt-5 mb-1 text-sm font-medium ml-4 text-tertiary"
         transition={{
           type: "spring",
           bounce: 0.2,
@@ -46,6 +47,13 @@ export function UsersLists({ preloadedLists }: UsersListsProps) {
             </Link>
           </div>
         ))}
+        <div
+          key="nav-item-shared-title"
+          data-id="nav-item-shared-title"
+          data-is-title
+        >
+          Shared lists
+        </div>
       </AnimatedBackground>
     </div>
   );

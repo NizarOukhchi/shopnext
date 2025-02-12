@@ -1,15 +1,15 @@
 "use client";
+
 import useClickOutside from "@/hooks/useClickOutside";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import { ArrowLeftIcon, PlusCircleIcon } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 import { useRef, useState, useEffect, useId, useActionState } from "react";
-import { Button, buttonVariants } from "./ui/button";
-import { Magnetic } from "./ui/magnetic";
+import { Button } from "./ui/button";
 import { TextShimmer } from "./ui/text-shimmer";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Id } from "../../convex/_generated/dataModel";
 import { createProduct } from "@/app/lists/[_id]/actions";
-import { cn } from "@/lib/utils";
+
 const TRANSITION = {
   type: "spring",
   bounce: 0.05,
@@ -23,6 +23,7 @@ const initialState = {
 
 export function CreateProductPopover() {
   const params = useParams();
+  const router = useRouter();
   const listId = params._id as Id<"lists">;
   const [state, formAction, pending] = useActionState(
     createProduct,
@@ -67,33 +68,22 @@ export function CreateProductPopover() {
     if (wasPending.current && !pending) {
       // Mutation has completed
       closeMenu();
+      router.push(`/lists/${state.productId}`);
     }
     wasPending.current = pending;
-  }, [pending, state.productId]);
+  }, [listId, pending, router, state.productId]);
 
   return (
     <MotionConfig transition={TRANSITION}>
-      <div className="relative flex items-centerz-10">
+      <div className="relative flex items-center">
         <motion.button
           ref={buttonRef}
           key="button"
           layoutId={`popover-${uniqueId}`}
-          className={cn(buttonVariants({ variant: "default" }))}
+          className="relative inline-flex text-foreground px-3 py-2 rounded-md text-sm font-medium"
           onClick={openMenu}
         >
-          <Magnetic
-            intensity={0.1}
-            springOptions={{ bounce: 0.1 }}
-            actionArea="global"
-            range={200}
-          >
-            <motion.span
-              className="flex items-center"
-              layoutId={`popover-label-${uniqueId}`}
-            >
-              <PlusCircleIcon size={20} />
-            </motion.span>
-          </Magnetic>
+          Add product
         </motion.button>
 
         <AnimatePresence>

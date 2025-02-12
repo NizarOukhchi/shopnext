@@ -4,6 +4,7 @@ import { fetchQuery } from "convex/nextjs";
 import { getAuthToken } from "../auth";
 
 export default async function ListsPage() {
+  console.log("ListsPage");
   const token = await getAuthToken();
   if (!token) {
     redirect("/sign-in");
@@ -12,5 +13,7 @@ export default async function ListsPage() {
   if (lists.length > 0) {
     return redirect(`/lists/${lists[0]._id}`);
   }
-  return <div>no list found</div>;
+  return (
+    <div>no list found, create a new one using the button in the sidebar</div>
+  );
 }

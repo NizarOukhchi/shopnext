@@ -8,18 +8,21 @@ import {
   useEffect,
   useState,
   useId,
+  ReactNode,
 } from "react";
 
 type AnimatedBackgroundProps = {
   children:
     | ReactElement<{ "data-id": string }>[]
-    | ReactElement<{ "data-id": string }>;
+    | ReactElement<{ "data-id": string }>
+    | ReactNode;
   defaultValue?: string;
   onValueChange?: (newActiveId: string | null) => void;
   className?: string;
   transition?: Transition;
   enableHover?: boolean;
   childrenClassName?: string;
+  titleClassName?: string;
 };
 
 export function AnimatedBackground({
@@ -30,15 +33,18 @@ export function AnimatedBackground({
   transition,
   enableHover = false,
   childrenClassName,
+  titleClassName,
 }: AnimatedBackgroundProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const uniqueId = useId();
 
-  const handleSetActiveId = (id: string | null) => {
-    setActiveId(id);
+  const handleSetActiveId = (id: string | null, isTitle?: boolean) => {
+    if (!isTitle) {
+      setActiveId(id);
 
-    if (onValueChange) {
-      onValueChange(id);
+      if (onValueChange) {
+        onValueChange(id);
+      }
     }
   };
 
@@ -51,14 +57,14 @@ export function AnimatedBackground({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return Children.map(children, (child: any, index) => {
     const id = child.props["data-id"];
-
+    const isTitle = child.props["data-is-title"];
     const interactionProps = enableHover
       ? {
           onMouseEnter: () => handleSetActiveId(id),
           onMouseLeave: () => handleSetActiveId(null),
         }
       : {
-          onClick: () => handleSetActiveId(id),
+          onClick: () => handleSetActiveId(id, isTitle),
         };
 
     return cloneElement(
@@ -87,7 +93,12 @@ export function AnimatedBackground({
             />
           )}
         </AnimatePresence>
-        <span className={cn("z-10 w-full", childrenClassName)}>
+        <span
+          className={cn(
+            "z-10 w-full",
+            isTitle ? titleClassName : childrenClassName
+          )}
+        >
           {child.props.children}
         </span>
       </>

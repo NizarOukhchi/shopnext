@@ -5,6 +5,7 @@ export default defineSchema({
   lists: defineTable({
     name: v.string(),
     creatorId: v.string(), // Clerk user ID
+    isPublic: v.boolean(),
   }).index("by_creator", ["creatorId"]),
 
   shares: defineTable({

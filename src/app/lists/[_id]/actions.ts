@@ -2,28 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { api } from "../../../../convex/_generated/api";
-import { fetchMutation } from "convex/nextjs";
+import { fetchMutation, fetchQuery } from "convex/nextjs";
 import { getAuthToken } from "@/app/auth";
-import { Id } from "../../../../convex/_generated/dataModel";
-
-export async function createList(prevState: unknown, formData: FormData) {
-  "use server";
-
-  const authToken = await getAuthToken();
-  if (!authToken) {
-    return { message: "Unauthenticated" };
-  }
-
-  const listId = await fetchMutation(
-    api.lists.create,
-    {
-      name: formData.get("name") as string,
-    },
-    { token: authToken }
-  );
-  revalidatePath("/lists");
-  return { message: "List created", listId };
-}
+import { Id, Doc } from "../../../../convex/_generated/dataModel";
 
 export async function createProduct(prevState: unknown, formData: FormData) {
   "use server";
@@ -48,4 +29,28 @@ export async function createProduct(prevState: unknown, formData: FormData) {
   );
   revalidatePath(`/lists/${listId}`);
   return { message: "Product created", productId };
+}
+
+export async function deleteList(prevState: unknown, formData: FormData) {
+  "use server";
+
+  const authToken = await getAuthToken();
+  if (!authToken) {
+    return { message: "Unauthenticated" };
+  }
+
+  const listId = formData.get("listId") as Id<"lists">;
+  let nextList: Doc<"lists"> | null = null;
+
+  nextList = await fetchQuery(
+    api.lists.getNextList,
+    { listId },
+    { token: authToken }
+  );
+  await fetchMutation(api.lists.deleteList, { listId }, { token: authToken });
+
+  if (nextList) {
+    return { message: "List deleted", nextList };
+  }
+  return { message: "List deleted" };
 }

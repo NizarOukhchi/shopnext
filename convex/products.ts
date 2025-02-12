@@ -9,9 +9,6 @@ export const getPaginatedProducts = query({
     listId: v.id("lists"),
   },
   handler: async (ctx, { listId, paginationOpts }) => {
-    const identity = await checkAuth(ctx);
-    await checkAccess(ctx, listId, identity.subject, "read");
-
     return await ctx.db
       .query("products")
       .withIndex("by_list", (q) => q.eq("listId", listId))
