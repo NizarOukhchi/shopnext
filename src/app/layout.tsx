@@ -5,7 +5,6 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ConvexClientProvider } from "@/components/ConvexProvider";
 import { Providers } from "@/components/Providers";
-import Script from "next/script";
 
 const wotfard = localFont({
   src: [
@@ -43,7 +42,7 @@ export default function RootLayout({
     <ConvexClientProvider>
       <html lang="en" suppressHydrationWarning>
         <head>
-          <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+          {/*          <Script src="https://unpkg.com/react-scan/dist/auto.global.js" /> */}
         </head>
         <Providers>
           <body className={`${wotfard.className} antialiased`}>

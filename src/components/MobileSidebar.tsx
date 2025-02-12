@@ -10,6 +10,7 @@ import { ModeToggle } from "./ModeToggle";
 import { UsersLists } from "./UsersLists";
 import { Preloaded } from "convex/react";
 import { api } from "../../convex/_generated/api";
+import { CreateListPopover } from "./CreateListPopover";
 
 interface MobileSidebarProps {
   preloadedLists: Preloaded<typeof api.lists.getLists>;
@@ -60,9 +61,10 @@ export function MobileSidebar({ preloadedLists }: MobileSidebarProps) {
                 </Button>
               </div>
             </div>
-            <div className="p-4">
+            <nav className="space-y-2 p-4">
+              <CreateListPopover />
               <UsersLists preloadedLists={preloadedLists} />
-            </div>
+            </nav>
           </motion.div>
         )}
       </AnimatePresence>
